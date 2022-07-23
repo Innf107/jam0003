@@ -19,10 +19,10 @@ pub enum Statement {
 #[derive(Debug, Clone)]
 pub enum Stream {
     // NOTE: just parse this as "Var("input")
-    // Input,                                       // input
+    // Input,                                    // input
     Var(String),                                 // x
     NumConst(f64),                               // v
-    StringConst(String),                        // str
+    StringConst(String),                         // str
     Pipe(Box<Stream>, Box<Machine>),             // s -> m
     Zip(Vec<Stream>),                            // s₁ , .. , sₙ
     Cond(Box<Stream>, Box<Stream>, Box<Stream>), // s₁ ? s₂ : s₃
@@ -32,12 +32,26 @@ pub enum Stream {
 #[derive(Debug, Clone)]
 
 pub enum Machine {
-    Named(String), // x
+    Var(String),
+    Builtin(Builtin),
+    Defined(Vec<Statement>)
+}
+
+#[derive(Debug, Clone)]
+pub enum Builtin {
+    Add,
+    Mul,
+    Dup2,
+    Dup3,
 }
 
 #[derive(Debug, Clone)]
 pub enum Value {
+    /// All streams are infinite.
+    /// When a stream is empty is keeps returning Null.
+    Null,
     Num(f64),
-    String(String),
+    Str(String),
+    Bool(bool),
     Tuple(Vec<Value>),
 }

@@ -26,14 +26,14 @@ fn parser() -> impl Parser<Token, Program, Error = Simple<Token>> {
         _ => Err(Simple::custom(span, "Expected a string literal")),
     });
 
-    let machine = ident.map(|x| {Machine::Named(x)});
+    let machine = ident.map(|x| {Machine::Var(x)});
 
     let stream: Recursive<Token, Stream, _> = recursive(|stream| {
         let stream_leaf = 
             ident.map(|name| {Stream::Var(name)})       // x
             .or(float.map(|f| {Stream::NumConst(f)})) // n
             .or(string.map(|s| {Stream::StringConst(s)})) // s
-            .or(just(Token::Input).to(Stream::Input)) // input
+            .or(just(Token::Input).to(Stream::Var(String::from("Input")))) // input
             .or(just(Token::Lparen).then(stream.clone()).then_ignore(just(Token::Rparen)).map(|(_, s)| {s})); // ( s )
 
         let limit = 

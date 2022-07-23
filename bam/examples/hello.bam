@@ -1,0 +1,7 @@
+let hello = "Hello World!"
+
+factory main() {
+    assemble{
+        hello{1} -> stdout
+    }
+}
